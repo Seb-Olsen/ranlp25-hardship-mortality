@@ -1,77 +1,45 @@
-# Quantifying Societal Stress (Old Bailey × Bills of Mortality)
+# RANLP 2025 – Hardship Sentiment and Mortality
 
 This repository accompanies the LM4DH @ RANLP 2025 paper  
 **“Quantifying Societal Stress: Forecasting Historical London Mortality using Hardship Sentiment and Crime Data with NLP and Time-Series.”**
 
-## Overview
-We extract **hardship sentiment** from Old Bailey trial texts with **MacBERTh** embeddings and relate it to **weekly mortality** from the London Bills of Mortality using CCF, Granger tests, VAR/IRF, and **Temporal Fusion Transformer (TFT)** forecasting.
+## Contents
+- `hardship_mortality.py`: main script (single entry point)  
+- `README.md`: this document  
 
-## Data
-- **Old Bailey Sessions Papers (XML, 1678–1849)** – local path to the TEI files.  
-- **Weekly Bills of Mortality** – pipe-delimited file with `weekID|counttype|countn` (paper uses total mortality excluding `christened`).
+The script extracts **hardship sentiment** from Old Bailey trial texts using **MacBERTh** embeddings and relates it to weekly mortality from the Bills of Mortality.  
+We evaluate associations using CCF, Granger causality, and VAR/IRF, and perform forecasting with the **Temporal Fusion Transformer (TFT)**.
 
-> Please ensure you have permission to use and redistribute these datasets as per their licenses.
+## Requirements
+Tested with Python 3.10+.  
 
-## Environment
-Tested with **Python 3.10+**.
-
-Minimal requirements:
+Install dependencies:
 ```
-torch>=2.2
-pytorch-lightning>=2.2
-pytorch-forecasting>=1.0.0
-transformers>=4.41
-sentence-transformers>=2.5
-pandas>=2.0
-numpy>=1.24
-matplotlib>=3.7
-seaborn>=0.13
-statsmodels>=0.14
-joblib>=1.3
-tqdm>=4.66
-nltk>=3.8
-symspellpy>=6.7
+pip install torch pytorch-lightning pytorch-forecasting transformers sentence-transformers \
+  pandas numpy matplotlib seaborn statsmodels joblib tqdm nltk symspellpy
 ```
 
-## Quick start
+## Usage
+1. Edit the configuration block at the top of `hardship_mortality.py`:
+   - `OLD_BAILEY_DIR`: path to Old Bailey XML files  
+   - `COUNTS_FILE`: path to Bills of Mortality weekly counts  
+   - optional: `HISTORICAL_DICT_PATH` for spelling normalization  
+
+2. Run the script:
 ```
-python script2.py \
-  --old_bailey_dir /path/to/oldbailey/sessionsPapers \
-  --mortality_file /path/to/BillsMortality/counts.txt \
-  --outdir artifacts \
-  --agg max \
-  --lag_weeks 6 \
-  --device auto \
-  --seed 1337
+python hardship_mortality.py
 ```
 
-This will:
-- parse Old Bailey XML, compute **hardship** scores with MacBERTh,
-- aggregate to **weekly** series and merge with mortality,
-- save `artifacts/merged_weekly.csv`,
-- generate publication-quality figures in `artifacts/plots/*.pdf`.
+3. Outputs:
+   - merged weekly hardship–mortality dataset (`merged_weekly.csv`)  
+   - plots (CCF, rolling correlations, Granger, VAR/IRF, TFT forecasts) in `artifacts/plots/`  
 
-## Reproducing paper figures
-- CCF / rolling corr: `artifacts/plots/figure_ccf.pdf`, `figure_rolling_corr.pdf`  
-- Granger tests: `figure_granger.pdf`  
-- VAR/IRF: `figure_irf_hardship_to_deaths.pdf`, `figure_irf_deaths_to_hardship.pdf`  
-- TFT: `figure_tft_loss.pdf`, `figure_tft_forecasts.pdf`, `figure_tft_importance_encoder_decoder.pdf`
-
-> Fonts are ≥8–9 pt and saved as **PDF** for two-column print quality.
-
-## Configuration
-Key flags:
-- `--agg` ∈ {`mean`, `max`, `proportion`};  
-- `--lag_weeks` (default: 6 to match the paper);  
-- `--device` (`auto`/`cpu`/`cuda`);  
-- `--seed` for determinism.
-
-## Notes on validity
-- The hardship measure is a **proxy** derived from embedding similarity; see paper’s **Validation & Robustness** and appended example snippets.  
-- We report **predictive associations** (lead–lag); causal identification is **out of scope**.
+## Notes
+- Results may vary slightly across library versions.  
+- The hardship measure is a **proxy** based on embedding similarity; interpret findings as predictive associations, not causal claims.  
 
 ## Citation
-If you use this code or data processing, please cite the workshop paper.
+If you use this code, please cite the workshop paper:
 
 ```
 @inproceedings{OlsenBloem2025,
@@ -83,4 +51,5 @@ If you use this code or data processing, please cite the workshop paper.
 ```
 
 ## License
-Code: MIT (see `LICENSE`). Data follow their original licenses.
+Code: MIT License.  
+Data follow their original licenses (Old Bailey Online, Bills of Mortality).
