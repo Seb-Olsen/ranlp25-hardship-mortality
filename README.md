@@ -4,8 +4,9 @@ This repository accompanies the LM4DH @ RANLP 2025 paper
 **“Quantifying Societal Stress: Forecasting Historical London Mortality using Hardship Sentiment and Crime Data with NLP and Time-Series.”**
 
 ## Contents
-- `hardship_mortality.py`: main script (single entry point)  
-- `README.md`: this document  
+- `hardship_mortality.py`: main script (entry point for analysis)  
+- `README.md`: documentation and usage instructions  
+- `LICENSE`: MIT license for code reuse  
 
 The script extracts **hardship sentiment** from Old Bailey trial texts using **MacBERTh** embeddings and relates it to weekly mortality from the Bills of Mortality.  
 We evaluate associations using CCF, Granger causality, and VAR/IRF, and perform forecasting with the **Temporal Fusion Transformer (TFT)**.
